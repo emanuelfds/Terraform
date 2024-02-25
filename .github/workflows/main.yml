@@ -42,6 +42,13 @@ jobs:
       - name: Show extracted tag
         run: echo "Extracted tag is ${{ steps.extract_tag.outputs.tag }}"
 
+      - name: Extract Terraform version
+        id: extract_terraform_version
+        run: echo "TERRAFORM_VERSION=$(grep -oP '(?<=TERRAFORM_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)" >> $GITHUB_ENV
+
+      - name: Show Terraform version
+        run: echo "Extracted version is ${{ env.TERRAFORM_VERSION }}"
+
       - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v5
         with:
