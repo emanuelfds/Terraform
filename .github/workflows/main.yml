@@ -1,4 +1,4 @@
-name: Build Kubectl
+name: Build Terraform Image
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
 
       - name: Extract tag from Dockerfile
         id: extract_tag
-        run: echo "::set-output name=tag::$(grep -oP '(?<=KUBECTL_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)"
+        run: echo "::set-output name=tag::$(grep -oP '(?<=TERRAFORM_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)"
 
       - name: Show extracted tag
         run: echo "Extracted tag is ${{ steps.extract_tag.outputs.tag }}"
@@ -48,7 +48,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: emanuelfds/kubectl:${{ steps.extract_tag.outputs.tag }}
+          tags: emanuelfds/terraform:${{ steps.extract_tag.outputs.tag }}
 
       - name: Build and Push Image to GitHub Container Registry
         uses: docker/build-push-action@v5
@@ -56,4 +56,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/emanuelfds/kubectl:${{ steps.extract_tag.outputs.tag }}
+          tags: ghcr.io/emanuelfds/terraform:${{ steps.extract_tag.outputs.tag }}
