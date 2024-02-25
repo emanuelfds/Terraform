@@ -42,13 +42,21 @@ jobs:
       - name: Show extracted tag
         run: echo "Extracted tag is ${{ steps.extract_tag.outputs.tag }}"
 
+      - name: Extract Terraform version
+        id: extract_terraform_version
+        run: echo "::set-output name=tag::$(grep -oP '(?<=TERRAFORM_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)"
+    
+      - name: Show extracted Terraform version
+        run: echo "Extracted Terraform version is ${{ steps.extract_terraform_version.outputs.tag }}"
+
+
       - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: emanuelfds/terraform:${{ steps.extract_tag.outputs.tag }}
+          tags: emanuelfds/terraform:${{ steps.extract_terraform_version.outputs.tag }}
 
       - name: Build and Push Image to GitHub Container Registry
         uses: docker/build-push-action@v5
@@ -56,4 +64,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/emanuelfds/terraform:${{ steps.extract_tag.outputs.tag }}
+          tags: ghcr.io/emanuelfds/terraform:${{ steps.extract_terraform_version.outputs.tag }}
